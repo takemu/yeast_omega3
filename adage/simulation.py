@@ -1,4 +1,4 @@
-from adaptx.utils import *
+from adage.utils import *
 from config import *
 import numpy as np
 from reframed.solvers import solver_instance

@@ -1,7 +1,7 @@
 import os
 import sys
-from adaptx.simulation import *
-from adaptx.robustness_analysis import *
+from adage.simulation import *
+from adage.robustness_analysis import *
 from modeling import *
 from concurrent.futures import ProcessPoolExecutor, wait
 from config import *

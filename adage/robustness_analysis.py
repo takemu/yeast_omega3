@@ -1,7 +1,7 @@
 from reframed.solvers.solver import VarType
 from modeling import *
-import adaptx.utils as utils
-from adaptx.utils import *
+import adage.utils as utils
+from adage.utils import *
 import time
 import numpy as np
 import scipy as sp
