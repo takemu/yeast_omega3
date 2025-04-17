@@ -44,7 +44,7 @@ if __name__ == '__main__':
         elif i == 2:
             n_samples = int(arg)
     
-    output_dir = 'output/pigment'
+    output_dir = 'output/omega3'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     futures = []

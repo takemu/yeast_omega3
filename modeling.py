@@ -122,6 +122,9 @@ def add_bikaverin_pathway(cobra_model):
     cobra_model.add_reactions([r_b001, r_b002, r_b003])
     return cobra_model
 
+def add_omega3_pathway(cobra_model):
+    return cobra_model
+
 def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):
     reframed_model_file = f'{os.path.dirname(model_file)}/reframed-GEM-{type}.xml'
     env_file = f'{os.path.dirname(model_file)}/evo_envs.csv'
@@ -136,6 +139,8 @@ def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):
             cobra_model = add_indigoidine_pathway(cobra_model)
         elif type == 'bikaverin':
             cobra_model = add_bikaverin_pathway(cobra_model)
+        elif type == 'omega3':
+            cobra_model = add_omega3_pathway(cobra_model)
         cobra.io.write_sbml_model(cobra_model, reframed_model_file)
 
     reframed_model = reframed.load_cbmodel(reframed_model_file, flavor='fbc2')
