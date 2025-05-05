@@ -97,7 +97,7 @@ def simulate_ale_strain(gpr_model, nutrients, target_growth, extra_constraints={
                         delta=1E-2,
                         epsilon=1E-4)
     
-    return solution.values
+    return solution
 
 
 def simulate_engineered_strain(gpr_model, medium, carbon_source, target_growth, max_uptake, products, extra_constraints={}, ref_fluxes=None):
@@ -121,21 +121,22 @@ def simulate_engineered_strain(gpr_model, medium, carbon_source, target_growth, 
     constraints.update({r_biomass: (target_growth, MAX_FLUX)})
     constraints.update(extra_constraints)
     gpr_constraints = gpr_conversion(constraints)
-    obj_rxns = gpr_reactions(products, includes=['_f']) + gpr_reactions(products, excludes=['_f', '_b'])
-    solution = reframed.cobra.simulation.pFBA(gpr_model, 
-                                                  objective={rxn: 1 for rxn in obj_rxns}, 
-                                                  minimize=False, 
-                                                  constraints=gpr_constraints)
-    if ref_fluxes:
-        gpr_constraints.update({rxn: (solution.to_dataframe().loc[rxn, 'value'], MAX_FLUX) for rxn in obj_rxns})
-        solution = SWITCHX(gpr_model, 
-                        reference=ref_fluxes, 
-                        constraints=gpr_constraints, 
-                        reactions=gpr_model.u_reactions,
-                        delta=1E-2,
-                        epsilon=1E-4)
+    if not ref_fluxes:
+        obj_rxns = gpr_reactions(products, includes=['_f']) + gpr_reactions(products, excludes=['_f', '_b'])
+        solution = reframed.cobra.simulation.pFBA(gpr_model, 
+                                                    objective={rxn: 1 for rxn in obj_rxns}, 
+                                                    minimize=False, 
+                                                    constraints=gpr_constraints)
+    else:
+        # gpr_constraints.update({rxn: (solution.to_dataframe().loc[rxn, 'value'], MAX_FLUX) for rxn in obj_rxns})
+        solution = reframed.cobra.simulation.ROOM(gpr_model, 
+                                                reference=ref_fluxes, 
+                                                constraints=gpr_constraints, 
+                                                reactions=gpr_model.u_reactions,
+                                                delta=1E-2,
+                                                epsilon=1E-4)
         
-    return solution.values
+    return solution
 
 
 def simulate_adaptation(gpr_model, ref_fluxes, nutrients, extra_constraints={}):

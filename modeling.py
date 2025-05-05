@@ -123,34 +123,31 @@ def add_bikaverin_pathway(cobra_model):
     return cobra_model
 
 def add_omega3_pathway(cobra_model):
-    s_o001 = Metabolite(id='s_o001', name='DHA-CoA', formula='C27H44N7O17P3S', charge=0, compartment='erm')
-    s_o002 = Metabolite(id='s_o002', name='DHA-CoA', formula='C27H44N7O17P3S', charge=0, compartment='c')
-    s_o003 = Metabolite(id='s_o003', name='DHA', formula='C22H32O2', charge=0, compartment='c')
-    s_o004 = Metabolite(id='s_o004', name='DHA', formula='C22H32O2', charge=0, compartment='e')
-    cobra_model.add_metabolites([s_o001, s_o002, s_o003, s_o004])    
-    s_2821 = cobra_model.metabolites.get_by_id('s_2821') # oleoyl-CoA_erm
-    s_2782 = cobra_model.metabolites.get_by_id('s_2782') # malonyl-CoA_erm
-    s_2799 = cobra_model.metabolites.get_by_id('s_2799') # NADPH_erm
-    s_2783 = cobra_model.metabolites.get_by_id('s_2783') # H+_erm
+    s_o001 = Metabolite(id='s_o001', name='DHA', formula='C22H32O2', charge=0, compartment='c')
+    s_o002 = Metabolite(id='s_o002', name='DHA', formula='C22H32O2', charge=0, compartment='e')
+    cobra_model.add_metabolites([s_o001, s_o002])    
+    # s_1262 = cobra_model.metabolites.get_by_id('s_1262') # oleoyl-CoA_c
+    s_1260 = cobra_model.metabolites.get_by_id('s_1260') # oleate
+    s_1101 = cobra_model.metabolites.get_by_id('s_1101') # malonyl-CoA_c
+    s_1212 = cobra_model.metabolites.get_by_id('s_1212') # NADPH_c
     s_0794 = cobra_model.metabolites.get_by_id('s_0794') # H+_c
-    s_2817 = cobra_model.metabolites.get_by_id('s_2817') # O2_erm
-    s_2785 = cobra_model.metabolites.get_by_id('s_2785') # CoA_erm
+    s_1275 = cobra_model.metabolites.get_by_id('s_1275') # O2_c
     s_0529 = cobra_model.metabolites.get_by_id('s_0529') # CoA_c
-    s_2818 = cobra_model.metabolites.get_by_id('s_2818') # NADH_erm
-    s_2808 = cobra_model.metabolites.get_by_id('s_2808') # H2O_erm
+    s_1203 = cobra_model.metabolites.get_by_id('s_1203') # NADH_c
     s_0803 = cobra_model.metabolites.get_by_id('s_0803') # H2O_c
 
-    heterologous_genes = ['FAD2', 'FAD3', 'FADSD6', 'ELOVL5', 'FADSD5', 'ELOVL2', 'D4']
-    for gene in heterologous_genes:
-        cobra_model.genes.append(cobra.Gene(gene))
-    r_o001 = add_reaction('r_o001', 'DHA-CoA synthesis', 0, 1000, 
-                          {s_2821: -1.0, s_2782: -4.0, s_2799: -5.0, s_2783: -5.0, s_2817: -2.0, s_o001: 1.0, s_2785: 4.0, s_2818: 5.0, s_2808: 3.0}, 
-                          ' and '.join(heterologous_genes))
-    r_o002 = add_reaction('r_o002', 'DHA-CoA transport', -1000, 1000, {s_o001: -1.0, s_o002: 1.0})
-    r_o003 = add_reaction('r_o003', 'DHA-CoA hydrolysis', 0, 1000, {s_o002: -1.0, s_0803: -1.0, s_o003: 1.0, s_0529: 1.0, s_0794: 1.0}, 'YJR019C')
-    r_o004 = add_reaction('r_o004', 'DHA transport', -1000, 1000, {s_o003: -1.0, s_o004: 1.0})
-    r_o005 = add_reaction('r_o005', 'DHA exchange', 0, 1000, {s_o004: -1.0})
-    cobra_model.add_reactions([r_o001, r_o002, r_o003, r_o004, r_o005])
+    # heterologous_genes = ['FAD2', 'FAD3', 'FADSD6', 'ELOVL5', 'FADSD5', 'ELOVL2', 'D4']
+    # for gene in heterologous_genes:
+    #     cobra_model.genes.append(cobra.Gene(gene))
+    gene1 = cobra.Gene('DHAS')  # artificial gene for DHA synthase
+    gene1.name = 'DHA synthase'
+    cobra_model.genes.append(gene1)
+    # r_o001 = add_reaction('r_o001', 'oleoyl-CoA hydrolysis', 0, 1000, {s_1262: -1.0, s_0803: -1.0, s_1260: 1.0, s_0529: 1.0, s_0794: 1.0}, 'YJR019C')
+    r_o001 = add_reaction('r_o001', 'DHA synthesis', 0, 1000, 
+                          {s_1260: -1.0, s_1101: -4.0, s_1212: -5.0, s_0794: -5.0, s_1275: -5.0, s_o001: 1.0, s_0529: 4.0, s_1203: 5.0, s_0803: 4.0}, 'DHAS')
+    r_o002 = add_reaction('r_o002', 'DHA transport', -1000, 1000, {s_o001: -1.0, s_o002: 1.0})
+    r_o003 = add_reaction('r_o003', 'DHA exchange', 0, 1000, {s_o002: -1.0})
+    cobra_model.add_reactions([r_o001, r_o002, r_o003])
     return cobra_model
 
 def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):

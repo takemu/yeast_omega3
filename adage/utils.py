@@ -29,12 +29,15 @@ def gpr_reactions(reframed_rxns, includes=[], excludes=[]):
 def gpr_conversion(constraints):
     gpr_constrs = {}
     for rxn, bounds in constraints.items():
-        for gpr_rxn in gpr_reactions([rxn], excludes=['_f', '_b']):
-            gpr_constrs.update({gpr_rxn: bounds})
-        for gpr_rxn in gpr_reactions([rxn], includes=['_f']):
-            gpr_constrs.update({gpr_rxn: (0, bounds[1])})
-        for gpr_rxn in gpr_reactions([rxn], includes=['_b']):
-            gpr_constrs.update({gpr_rxn: (0, -bounds[0])})
+        gpr_rxns = gpr_reactions([rxn], excludes=['_f', '_b'])
+        if gpr_rxns:
+            for gpr_rxn in gpr_rxns:
+                gpr_constrs.update({gpr_rxn: bounds})
+        else:
+            for gpr_rxn in gpr_reactions([rxn], includes=['_f']):
+                gpr_constrs.update({gpr_rxn: (0, bounds[1])})
+            for gpr_rxn in gpr_reactions([rxn], includes=['_b']):
+                gpr_constrs.update({gpr_rxn: (0, -bounds[0])})
     return gpr_constrs
 
 
