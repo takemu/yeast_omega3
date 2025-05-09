@@ -152,7 +152,7 @@ def add_omega3_pathway(cobra_model):
 
 def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):
     reframed_model_file = f'{os.path.dirname(model_file)}/reframed-GEM-{type}.xml'
-    env_file = f'{os.path.dirname(model_file)}/evo_envs.csv'
+    # env_file = f'{os.path.dirname(model_file)}/evo_envs.csv'
 
     if not os.path.exists(reframed_model_file):
         cobra_model = cobra.io.read_sbml_model(model_file)
@@ -180,47 +180,47 @@ def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):
     # reframed_model.reactions.R_r_1021.ub = 0  # succinate dehydrogenase (ubiquinone-6)
     # reframed_model.reactions.R_r_0226.ub = 0  # ATP synthase
     # reframed_model.reactions.R_r_0662.ub = 0  # isocitrate lyase
-    '''close threonine aldolase assumed to have minor role during growth in minimal medium,
-        close to equilibrium -7.2 +- 4.4 [kJ/mol] (http://equilibrator.weizmann.ac.il)'''
-    reframed_model.reactions.R_r_1040.ub = 0  # threonine aldolase
-    '''close FMN reductases with relevance in apoptosis if these are on,
-        anaerobic conditions generate in simulations succinate and no glycerol this does not match with the real biological state'''
-    reframed_model.reactions.R_r_0441.ub = 0  # FMN reductase
-    reframed_model.reactions.R_r_0442.ub = 0  # FMN reductase
-    # '''close glycerol utilization pathway as glucose is used as c-source'''
-    # reframed_model.reactions.R_r_0487.ub = 0  # glycerol dehydrogenase (NADP-dependent)
-    # reframed_model.reactions.R_r_0488.ub = 0  # glycerol kinase
-    '''close higher alcohol acetate ester -esterases'''
-    reframed_model.reactions.R_r_0656.ub = 0  # isoamyl acetate-hydrolyzing esterase
-    reframed_model.reactions.R_r_0657.ub = 0  # isobutyl acetate-hydrolyzing esterase
-    '''close phenylacetaldehyde exchange assuming redox status preferring further conversion to phenyl ethanol synthesis'''
-    reframed_model.reactions.R_r_2001.ub = 0  # phenylacetaldehyde exchange
-    # '''constrain isocitrate dehydrogenase in NADPH generating direction'''
-    # reframed_model.reactions.R_r_0659.lb = 0  # isocitrate dehydrogenase (NADP)
-    # '''glycine synthesis from serine when glucose is the carbon source'''
-    # reframed_model.reactions.R_r_0502.lb = 0  # glycine hydroxymethyltransferase
-    # reframed_model.reactions.R_r_0503.lb = 0  # glycine hydroxymethyltransferase
-    # reframed_model.reactions.R_r_0732.lb = 0  # methylenetetrahydrofolate dehydrogenase (NADP)
-    # reframed_model.reactions.R_r_0733.lb = 0  # methylenetetrahydrofolate dehydrogenase (NADP)
-    reframed_model.reactions.R_r_4581.ub = 0
-    reframed_model.reactions.R_r_4582.ub = 0
+    # '''close threonine aldolase assumed to have minor role during growth in minimal medium,
+    #     close to equilibrium -7.2 +- 4.4 [kJ/mol] (http://equilibrator.weizmann.ac.il)'''
+    # reframed_model.reactions.R_r_1040.ub = 0  # threonine aldolase
+    # '''close FMN reductases with relevance in apoptosis if these are on,
+    #     anaerobic conditions generate in simulations succinate and no glycerol this does not match with the real biological state'''
+    # reframed_model.reactions.R_r_0441.ub = 0  # FMN reductase
+    # reframed_model.reactions.R_r_0442.ub = 0  # FMN reductase
+    # # '''close glycerol utilization pathway as glucose is used as c-source'''
+    # # reframed_model.reactions.R_r_0487.ub = 0  # glycerol dehydrogenase (NADP-dependent)
+    # # reframed_model.reactions.R_r_0488.ub = 0  # glycerol kinase
+    # '''close higher alcohol acetate ester -esterases'''
+    # reframed_model.reactions.R_r_0656.ub = 0  # isoamyl acetate-hydrolyzing esterase
+    # reframed_model.reactions.R_r_0657.ub = 0  # isobutyl acetate-hydrolyzing esterase
+    # '''close phenylacetaldehyde exchange assuming redox status preferring further conversion to phenyl ethanol synthesis'''
+    # reframed_model.reactions.R_r_2001.ub = 0  # phenylacetaldehyde exchange
+    # # '''constrain isocitrate dehydrogenase in NADPH generating direction'''
+    # # reframed_model.reactions.R_r_0659.lb = 0  # isocitrate dehydrogenase (NADP)
+    # # '''glycine synthesis from serine when glucose is the carbon source'''
+    # # reframed_model.reactions.R_r_0502.lb = 0  # glycine hydroxymethyltransferase
+    # # reframed_model.reactions.R_r_0503.lb = 0  # glycine hydroxymethyltransferase
+    # # reframed_model.reactions.R_r_0732.lb = 0  # methylenetetrahydrofolate dehydrogenase (NADP)
+    # # reframed_model.reactions.R_r_0733.lb = 0  # methylenetetrahydrofolate dehydrogenase (NADP)
+    # reframed_model.reactions.R_r_4581.ub = 0
+    # reframed_model.reactions.R_r_4582.ub = 0
 
-    '''close all environmental uptake reactions but set them reversible (able to open for a specific environment later)'''
-    env_df = pd.read_csv(env_file, index_col=0)
-    uptake_reactions = set()
-    for ind, row in env_df.iterrows():
-        rxns = ast.literal_eval(env_df.loc[ind, 'reactions'])
-        for rxn in rxns:
-            uptake_reactions.add(rxn)
-            reframed_model.reactions[rxn].lb = 0
-            # reframed_model.reactions[rxn].ub = inf
-            reframed_model.reactions[rxn].reversible = True
+    # '''close all environmental uptake reactions but set them reversible (able to open for a specific environment later)'''
+    # env_df = pd.read_csv(env_file, index_col=0)
+    # uptake_reactions = set()
+    # for ind, row in env_df.iterrows():
+    #     rxns = ast.literal_eval(env_df.loc[ind, 'reactions'])
+    #     for rxn in rxns:
+    #         uptake_reactions.add(rxn)
+    #         reframed_model.reactions[rxn].lb = 0
+    #         # reframed_model.reactions[rxn].ub = inf
+    #         reframed_model.reactions[rxn].reversible = True
 
     gpr_model = reframed.core.transformation.gpr_transform(reframed_model, inplace=False, add_proteome=True, gene_prefix='G_', usage_prefix='u_', pseudo_genes=None)
-    solver = reframed.solvers.solver_instance(gpr_model)
-    solver.add_constraint('flux_ratio_constraint1', {'R_r_1589': 2, 'R_r_2000': -1})
-    solver.add_constraint('flux_ratio_constraint2', {'R_r_1580': 2, 'R_r_1581': -1})
-    solver.add_constraint('flux_ratio_constraint3', {'R_r_1865': 2, 'R_r_1862': -1})
+    # solver = reframed.solvers.solver_instance(gpr_model)
+    # solver.add_constraint('flux_ratio_constraint1', {'R_r_1589': 2, 'R_r_2000': -1})
+    # solver.add_constraint('flux_ratio_constraint2', {'R_r_1580': 2, 'R_r_1581': -1})
+    # solver.add_constraint('flux_ratio_constraint3', {'R_r_1865': 2, 'R_r_1862': -1})
 
     gpr_rxn_df = pd.DataFrame([[r[0], r[1].name] for r in gpr_model.reactions.items()], columns=['id', 'r_name']).set_index('id')
     for reframed_rxn, _ in reframed_model.reactions.items():
@@ -259,11 +259,11 @@ def create_gpr_model(model_file, env_file='evo_envs.csv', type='aromatic'):
     return gpr_model, reframed_model
 
 
-def filter_desired_trait(reframed_model, desired_trait):
-    new_desired_trait = []
-    for rxn in desired_trait:
-        rxn_name = reframed_model.reactions[rxn].name
-        if not (rxn_name.endswith('transport') or rxn_name.endswith('diffusion')):
-            new_desired_trait.append(rxn)
-    # print(new_desired_trait)
-    return new_desired_trait
+# def filter_desired_trait(reframed_model, desired_trait):
+#     new_desired_trait = []
+#     for rxn in desired_trait:
+#         rxn_name = reframed_model.reactions[rxn].name
+#         if not (rxn_name.endswith('transport') or rxn_name.endswith('diffusion')):
+#             new_desired_trait.append(rxn)
+#     # print(new_desired_trait)
+#     return new_desired_trait

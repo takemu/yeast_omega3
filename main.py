@@ -1,7 +1,8 @@
 import os
-import sys
-from adage.simulation import *
-from adage.robustness_analysis import *
+# import sys
+import time
+from simulation import *
+# from adage.robustness_analysis import *
 from modeling import *
 from concurrent.futures import ProcessPoolExecutor, wait
 from config import *
@@ -12,7 +13,7 @@ WK_NO = min(10, os.cpu_count() - 2)
 
 def run_dha01(output_dir):
     gpr_model, _ = create_gpr_model(model_xml, type='omega3')
-    solution = simulate_engineered_strain(gpr_model, ynb_medium, [substrate_rxns['Glc']], 0.4, 10, ['R_r_o003'], evo_base_constr)
+    solution = simulate_engineered_strain(gpr_model, ynb_medium, [substrate_rxns['Glc']], 0.3, 10, ['R_r_o003'], evo_base_constr)
     solution.to_dataframe().to_csv(f'{output_dir}/dha01_results.csv')
     return solution.values
 
